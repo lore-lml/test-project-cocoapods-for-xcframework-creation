@@ -1,0 +1,124 @@
+{
+  "ABIRoot": {
+    "kind": "Root",
+    "name": "TopLevel",
+    "printedName": "TopLevel",
+    "children": [
+      {
+        "kind": "Import",
+        "name": "SdkB",
+        "printedName": "SdkB",
+        "declKind": "Import",
+        "moduleName": "SdkA",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "SwiftDate",
+        "printedName": "SwiftDate",
+        "declKind": "Import",
+        "moduleName": "SdkA"
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "TestClassA",
+        "printedName": "TestClassA",
+        "children": [
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "TestClassA",
+                "printedName": "SdkA.TestClassA",
+                "usr": "s:4SdkA10TestClassAC"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "s:4SdkA10TestClassACACycfc",
+            "mangledName": "$s4SdkA10TestClassACACycfc",
+            "moduleName": "SdkA",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Function",
+            "name": "foo",
+            "printedName": "foo()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:4SdkA10TestClassAC3fooyyF",
+            "mangledName": "$s4SdkA10TestClassAC3fooyyF",
+            "moduleName": "SdkA",
+            "declAttributes": [
+              "Final",
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "requestedForAccess",
+            "printedName": "requestedForAccess(completion:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(Swift.Bool) -> ()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Bool",
+                    "printedName": "Swift.Bool",
+                    "usr": "s:Sb"
+                  }
+                ]
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:4SdkA10TestClassAC18requestedForAccess10completionyySbc_tF",
+            "mangledName": "$s4SdkA10TestClassAC18requestedForAccess10completionyySbc_tF",
+            "moduleName": "SdkA",
+            "declAttributes": [
+              "Final",
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Class",
+        "usr": "s:4SdkA10TestClassAC",
+        "mangledName": "$s4SdkA10TestClassAC",
+        "moduleName": "SdkA",
+        "declAttributes": [
+          "Final",
+          "AccessControl"
+        ]
+      }
+    ],
+    "json_format_version": 8
+  },
+  "ConstValues": []
+}

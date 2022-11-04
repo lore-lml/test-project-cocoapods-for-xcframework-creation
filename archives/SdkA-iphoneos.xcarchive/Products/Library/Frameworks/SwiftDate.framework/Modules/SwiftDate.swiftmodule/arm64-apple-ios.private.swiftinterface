@@ -1,0 +1,2441 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.7 (swiftlang-5.7.0.127.4 clang-1400.0.29.50)
+// swift-module-flags: -target arm64-apple-ios13.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SwiftDate
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+import Darwin
+import Foundation
+import ObjectiveC
+import Swift
+@_exported import SwiftDate
+import _Concurrency
+import _StringProcessing
+import ObjectiveC.runtime
+public typealias Calendars = Foundation.Calendar.Identifier
+public protocol CalendarConvertible {
+  func toCalendar() -> Foundation.Calendar
+}
+extension Foundation.Calendar : SwiftDate.CalendarConvertible {
+  public func toCalendar() -> Foundation.Calendar
+}
+extension Foundation.Calendar.Identifier : SwiftDate.CalendarConvertible {
+  public func toCalendar() -> Foundation.Calendar
+}
+extension Foundation.Calendar.Identifier : Swift.CustomStringConvertible {
+  public var description: Swift.String {
+    get
+  }
+  public init(_ rawValue: Swift.String)
+}
+extension Foundation.DateFormatter {
+  public static func sharedFormatter(forRegion region: SwiftDate.Region?, format: Swift.String? = nil) -> Foundation.DateFormatter
+  @available(iOS 9.0, macOS 10.11, *)
+  public static func sharedOrdinalNumberFormatter(locale: SwiftDate.LocaleConvertible) -> Foundation.NumberFormatter
+}
+public enum SymbolFormatStyle {
+  case `default`
+  case defaultStandalone
+  case short
+  case veryShort
+  case standaloneShort
+  case standaloneVeryShort
+  public static func == (a: SwiftDate.SymbolFormatStyle, b: SwiftDate.SymbolFormatStyle) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public struct DateFormats {
+  public static var autoFormats: [Swift.String]
+  public static let iso8601: Swift.String
+  public static let extended: Swift.String
+  public static let altRSS: Swift.String
+  public static let rss: Swift.String
+  public static let httpHeader: Swift.String
+  public static let standard: Swift.String
+  public static let sql: Swift.String
+  public static func resetAutoFormats()
+  public static func parse(string: Swift.String, format: Swift.String?, region: SwiftDate.Region) -> Foundation.Date?
+  public static func parse(string: Swift.String, formats: [Swift.String], region: SwiftDate.Region) -> Foundation.Date?
+}
+public enum RoundDateMode {
+  case to5Mins
+  case to10Mins
+  case to30Mins
+  case toMins(Swift.Int)
+  case toCeil5Mins
+  case toCeil10Mins
+  case toCeil30Mins
+  case toCeilMins(Swift.Int)
+  case toFloor5Mins
+  case toFloor10Mins
+  case toFloor30Mins
+  case toFloorMins(Swift.Int)
+}
+public enum DateRelatedType {
+  case startOfDay
+  case endOfDay
+  case startOfWeek
+  case endOfWeek
+  case startOfMonth
+  case endOfMonth
+  case tomorrow
+  case tomorrowAtStart
+  case yesterday
+  case yesterdayAtStart
+  case nearestMinute(minute: Swift.Int)
+  case nearestHour(hour: Swift.Int)
+  case nextWeekday(SwiftDate.WeekDay)
+  case nextDSTDate
+  case prevMonth
+  case nextMonth
+  case prevWeek
+  case nextWeek
+  case nextYear
+  case prevYear
+  case nextDSTTransition
+}
+public struct TimeCalculationOptions {
+  public var matchingPolicy: Foundation.Calendar.MatchingPolicy
+  public var repeatedTimePolicy: Foundation.Calendar.RepeatedTimePolicy
+  public var direction: Foundation.Calendar.SearchDirection
+  public init(matching: Foundation.Calendar.MatchingPolicy = .nextTime, timePolicy: Foundation.Calendar.RepeatedTimePolicy = .first, direction: Foundation.Calendar.SearchDirection = .forward)
+}
+extension Foundation.Date : SwiftDate.DateRepresentable {
+  public var date: Foundation.Date {
+    get
+  }
+  public var region: SwiftDate.Region {
+    get
+  }
+  public var customFormatter: Foundation.DateFormatter? {
+    get
+    set
+  }
+  public var dateComponents: Foundation.DateComponents {
+    get
+  }
+  public init?(_ string: Swift.String, format: Swift.String? = nil, region: SwiftDate.Region = SwiftDate.defaultRegion)
+  public init(seconds interval: Foundation.TimeInterval, region: SwiftDate.Region = Region.UTC)
+  public init(milliseconds interval: Swift.Int, region: SwiftDate.Region = Region.UTC)
+  public init?(components configuration: ((inout Foundation.DateComponents) -> Swift.Void), region: SwiftDate.Region? = SwiftDate.defaultRegion)
+  public init?(components: Foundation.DateComponents, region: SwiftDate.Region?)
+  public init(year: Swift.Int, month: Swift.Int, day: Swift.Int, hour: Swift.Int, minute: Swift.Int, second: Swift.Int = 0, nanosecond: Swift.Int = 0, region: SwiftDate.Region = SwiftDate.defaultRegion)
+  public func inDefaultRegion() -> SwiftDate.DateInRegion
+  public func `in`(region: SwiftDate.Region) -> SwiftDate.DateInRegion
+  public static func past() -> Foundation.Date
+  public static func future() -> Foundation.Date
+}
+extension Foundation.Date {
+  public func compareCloseTo(_ refDate: Foundation.Date, precision: Foundation.TimeInterval = 300) -> Swift.Bool
+  public func compare(_ compareType: SwiftDate.DateComparisonType) -> Swift.Bool
+  public func compare(toDate refDate: Foundation.Date, granularity: Foundation.Calendar.Component) -> Foundation.ComparisonResult
+  public func isBeforeDate(_ refDate: Foundation.Date, orEqual: Swift.Bool = false, granularity: Foundation.Calendar.Component) -> Swift.Bool
+  public func isAfterDate(_ refDate: Foundation.Date, orEqual: Swift.Bool = false, granularity: Foundation.Calendar.Component) -> Swift.Bool
+  public func positionInRange(date startDate: Foundation.Date, and endDate: Foundation.Date) -> Swift.Double?
+  public func isInRange(date startDate: Foundation.Date, and endDate: Foundation.Date, orEqual: Swift.Bool = false, granularity: Foundation.Calendar.Component = .nanosecond) -> Swift.Bool
+  public func isInside(date: Foundation.Date, granularity: Foundation.Calendar.Component) -> Swift.Bool
+  public func earlierDate(_ date: Foundation.Date) -> Foundation.Date
+  public func laterDate(_ date: Foundation.Date) -> Foundation.Date
+}
+extension Foundation.Date {
+  public func difference(in component: Foundation.Calendar.Component, from other: Foundation.Date) -> Swift.Int?
+  public func differences(in components: Swift.Set<Foundation.Calendar.Component>, from other: Foundation.Date) -> [Foundation.Calendar.Component : Swift.Int]
+}
+extension Foundation.Date {
+  public var isLeapMonth: Swift.Bool {
+    get
+  }
+  public var isLeapYear: Swift.Bool {
+    get
+  }
+  public var julianDay: Swift.Double {
+    get
+  }
+  public var modifiedJulianDay: Swift.Double {
+    get
+  }
+  public func getInterval(toDate: Foundation.Date?, component: Foundation.Calendar.Component) -> Swift.Int64
+}
+extension Foundation.Date {
+  public static func oldestIn(list: [Foundation.Date]) -> Foundation.Date?
+  public static func newestIn(list: [Foundation.Date]) -> Foundation.Date?
+  public static func enumerateDates(from startDate: Foundation.Date, to endDate: Foundation.Date, increment: ((Foundation.Date) -> (Foundation.DateComponents))) -> [Foundation.Date]
+  public static func enumerateDates(from startDate: Foundation.Date, to endDate: Foundation.Date, increment: Foundation.DateComponents) -> [Foundation.Date]
+  public func dateRoundedAt(at style: SwiftDate.RoundDateMode) -> Foundation.Date
+  public func dateAtStartOf(_ unit: Foundation.Calendar.Component) -> Foundation.Date
+  public func dateAtStartOf(_ units: [Foundation.Calendar.Component]) -> Foundation.Date
+  public func dateAtEndOf(_ unit: Foundation.Calendar.Component) -> Foundation.Date
+  public func dateAtEndOf(_ units: [Foundation.Calendar.Component]) -> Foundation.Date
+  public func dateBySet(_ components: [Foundation.Calendar.Component : Swift.Int]) -> Foundation.Date?
+  public func dateBySet(hour: Swift.Int?, min: Swift.Int?, secs: Swift.Int?, ms: Swift.Int? = nil, options: SwiftDate.TimeCalculationOptions = TimeCalculationOptions()) -> Foundation.Date?
+  public func dateTruncated(_ components: [Foundation.Calendar.Component]) -> Foundation.Date?
+  public func dateTruncated(from component: Foundation.Calendar.Component) -> Foundation.Date?
+  public func dateByAdding(_ count: Swift.Int, _ component: Foundation.Calendar.Component) -> SwiftDate.DateInRegion
+  public func dateAt(_ type: SwiftDate.DateRelatedType) -> Foundation.Date
+  public static func nowAt(_ type: SwiftDate.DateRelatedType) -> Foundation.Date
+  public static func datesForWeekday(_ weekday: SwiftDate.WeekDay, inMonth month: Swift.Int, ofYear year: Swift.Int, region: SwiftDate.Region = SwiftDate.defaultRegion) -> [Foundation.Date]
+  public static func datesForWeekday(_ weekday: SwiftDate.WeekDay, from startDate: Foundation.Date, to endDate: Foundation.Date, region: SwiftDate.Region = SwiftDate.defaultRegion) -> [Foundation.Date]
+  public func dateAt(weekdayOrdinal: Swift.Int, weekday: SwiftDate.WeekDay, monthNumber: Swift.Int? = nil, yearNumber: Swift.Int? = nil) -> Foundation.Date
+  public func nextWeekday(_ weekday: SwiftDate.WeekDay, region: SwiftDate.Region = SwiftDate.defaultRegion) -> Foundation.Date
+}
+public func - (lhs: Foundation.Date, rhs: Foundation.Date) -> Foundation.DateComponents
+public func + (lhs: Foundation.Date, rhs: Foundation.DateComponents) -> Foundation.Date
+public func + (lhs: Foundation.DateComponents, rhs: Foundation.Date) -> Foundation.Date
+public func - (lhs: Foundation.Date, rhs: Foundation.DateComponents) -> Foundation.Date
+public func + (lhs: Foundation.Date, rhs: Foundation.TimeInterval) -> Foundation.Date
+extension Foundation.Calendar.Component {
+  public var timeInterval: Swift.Double? {
+    get
+  }
+}
+extension Foundation.DateComponents {
+  public static var allComponentsSet: Swift.Set<Foundation.Calendar.Component> {
+    get
+  }
+  public var timeInterval: Foundation.TimeInterval {
+    get
+  }
+  public static func create(_ builder: ((inout Foundation.DateComponents) -> Swift.Void)) -> Foundation.DateComponents
+  public var fromNow: Foundation.Date {
+    get
+  }
+  public var ago: Foundation.Date {
+    get
+  }
+  public func from(_ date: SwiftDate.DateRepresentable) -> Foundation.Date?
+  public var isZero: Swift.Bool {
+    get
+  }
+  public static func + (lhs: Foundation.DateComponents, rhs: Foundation.DateComponents) -> Foundation.DateComponents
+  public static func - (lhs: Foundation.DateComponents, rhs: Foundation.DateComponents) -> Foundation.DateComponents
+  prefix public static func - (rhs: Foundation.DateComponents) -> Foundation.DateComponents
+  public subscript(component: Foundation.Calendar.Component) -> Swift.Int? {
+    get
+  }
+  public func `in`(_ component: Foundation.Calendar.Component, of calendar: SwiftDate.CalendarConvertible? = nil) -> Swift.Int?
+  public func `in`(_ components: Swift.Set<Foundation.Calendar.Component>, of calendar: SwiftDate.CalendarConvertible? = nil) -> [Foundation.Calendar.Component : Swift.Int]
+}
+public struct DateInRegion : SwiftDate.DateRepresentable, Swift.Decodable, Swift.Encodable, Swift.CustomStringConvertible, Swift.Comparable, Swift.Hashable {
+  public var date: Foundation.Date {
+    get
+  }
+  public let region: SwiftDate.Region
+  public var customFormatter: Foundation.DateFormatter?
+  public var dateComponents: Foundation.DateComponents {
+    get
+  }
+  public var description: Swift.String {
+    get
+  }
+  public var timeIntervalSince1970: Foundation.TimeInterval {
+    get
+  }
+  public init(_ date: Foundation.Date = Date(), region: SwiftDate.Region = SwiftDate.defaultRegion)
+  public init?(_ string: Swift.String, format: Swift.String? = nil, region: SwiftDate.Region = SwiftDate.defaultRegion)
+  public init?(_ string: Swift.String, formats: [Swift.String]?, region: SwiftDate.Region = SwiftDate.defaultRegion)
+  public init(seconds interval: Foundation.TimeInterval, region: SwiftDate.Region = Region.UTC)
+  public init(milliseconds interval: Swift.Int, region: SwiftDate.Region = Region.UTC)
+  public init?(components configuration: ((inout Foundation.DateComponents) -> Swift.Void), region: SwiftDate.Region? = SwiftDate.defaultRegion)
+  public init?(components: Foundation.DateComponents, region: SwiftDate.Region?)
+  public init(year: Swift.Int, month: Swift.Int, day: Swift.Int, hour: Swift.Int = 0, minute: Swift.Int = 0, second: Swift.Int = 0, nanosecond: Swift.Int = 0, region: SwiftDate.Region = SwiftDate.defaultRegion)
+  public static func past() -> SwiftDate.DateInRegion
+  public static func future() -> SwiftDate.DateInRegion
+  public func hash(into hasher: inout Swift.Hasher)
+  public func encode(to encoder: Swift.Encoder) throws
+  public var hashValue: Swift.Int {
+    get
+  }
+  public init(from decoder: Swift.Decoder) throws
+}
+public func == (lhs: SwiftDate.DateInRegion, rhs: SwiftDate.DateInRegion) -> Swift.Bool
+public func <= (lhs: SwiftDate.DateInRegion, rhs: SwiftDate.DateInRegion) -> Swift.Bool
+public func >= (lhs: SwiftDate.DateInRegion, rhs: SwiftDate.DateInRegion) -> Swift.Bool
+public func < (lhs: SwiftDate.DateInRegion, rhs: SwiftDate.DateInRegion) -> Swift.Bool
+public func > (lhs: SwiftDate.DateInRegion, rhs: SwiftDate.DateInRegion) -> Swift.Bool
+public enum DateComparisonType {
+  case isToday
+  case isTomorrow
+  case isYesterday
+  case isSameDay(SwiftDate.DateRepresentable)
+  case isThisWeek
+  case isNextWeek
+  case isLastWeek
+  case isSameWeek(SwiftDate.DateRepresentable)
+  case isThisMonth
+  case isNextMonth
+  case isLastMonth
+  case isSameMonth(SwiftDate.DateRepresentable)
+  case isThisYear
+  case isNextYear
+  case isLastYear
+  case isSameYear(SwiftDate.DateRepresentable)
+  case isInTheFuture
+  case isInThePast
+  case isEarlier(than: SwiftDate.DateRepresentable)
+  case isLater(than: SwiftDate.DateRepresentable)
+  case isWeekday
+  case isWeekend
+  case isMorning
+  case isAfternoon
+  case isEvening
+  case isNight
+  case isInDST
+}
+extension SwiftDate.DateInRegion {
+  public func compareCloseTo(_ refDate: SwiftDate.DateInRegion, precision: Foundation.TimeInterval = 300) -> Swift.Bool
+  public func compare(_ compareType: SwiftDate.DateComparisonType) -> Swift.Bool
+  public func compare(toDate refDate: SwiftDate.DateInRegion, granularity: Foundation.Calendar.Component) -> Foundation.ComparisonResult
+  public func isBeforeDate(_ date: SwiftDate.DateInRegion, orEqual: Swift.Bool = false, granularity: Foundation.Calendar.Component) -> Swift.Bool
+  public func isAfterDate(_ refDate: SwiftDate.DateInRegion, orEqual: Swift.Bool = false, granularity: Foundation.Calendar.Component) -> Swift.Bool
+  public func isInside(date: SwiftDate.DateInRegion, granularity: Foundation.Calendar.Component) -> Swift.Bool
+  public func positionInRange(date startDate: SwiftDate.DateInRegion, and endDate: SwiftDate.DateInRegion) -> Swift.Double?
+  public func isInRange(date startDate: SwiftDate.DateInRegion, and endDate: SwiftDate.DateInRegion, orEqual: Swift.Bool = true, granularity: Foundation.Calendar.Component = .nanosecond) -> Swift.Bool
+  public func earlierDate(_ date: SwiftDate.DateInRegion) -> SwiftDate.DateInRegion
+  public func laterDate(_ date: SwiftDate.DateInRegion) -> SwiftDate.DateInRegion
+  public func difference(in component: Foundation.Calendar.Component, from other: SwiftDate.DateInRegion) -> Swift.Int?
+  public func differences(in components: Swift.Set<Foundation.Calendar.Component>, from other: SwiftDate.DateInRegion) -> [Foundation.Calendar.Component : Swift.Int]
+}
+extension SwiftDate.DateInRegion {
+  public var isLeapMonth: Swift.Bool {
+    get
+  }
+  public var isLeapYear: Swift.Bool {
+    get
+  }
+  public var julianDay: Swift.Double {
+    get
+  }
+  public var modifiedJulianDay: Swift.Double {
+    get
+  }
+  public func getInterval(toDate: SwiftDate.DateInRegion?, component: Foundation.Calendar.Component) -> Swift.Int64
+  public func timeIntervalSince(_ date: SwiftDate.DateInRegion) -> Foundation.TimeInterval
+  public func componentsTo(_ rhs: SwiftDate.DateInRegion) -> Foundation.DateComponents
+  public func componentsSince(_ date: SwiftDate.DateInRegion, components: [Foundation.Calendar.Component]? = nil) -> Foundation.DateComponents
+}
+extension SwiftDate.DateInRegion {
+  public static func randomDates(count: Swift.Int, between initial: SwiftDate.DateInRegion, and final: SwiftDate.DateInRegion, region: SwiftDate.Region = SwiftDate.defaultRegion) -> [SwiftDate.DateInRegion]
+  public static func randomDate(withinDaysBeforeToday days: Swift.Int, region: SwiftDate.Region = SwiftDate.defaultRegion) -> SwiftDate.DateInRegion
+  public static func randomDate(region: SwiftDate.Region = SwiftDate.defaultRegion) -> SwiftDate.DateInRegion
+  public static func randomDate(between initial: SwiftDate.DateInRegion, and final: SwiftDate.DateInRegion, region: SwiftDate.Region = SwiftDate.defaultRegion) -> SwiftDate.DateInRegion
+  public static func oldestIn(list: [SwiftDate.DateInRegion]) -> SwiftDate.DateInRegion?
+  public static func sortedByOldest(list: [SwiftDate.DateInRegion]) -> [SwiftDate.DateInRegion]
+  public static func sortedByNewest(list: [SwiftDate.DateInRegion]) -> [SwiftDate.DateInRegion]
+  public static func newestIn(list: [SwiftDate.DateInRegion]) -> SwiftDate.DateInRegion?
+  public static func enumerateDates(from startDate: SwiftDate.DateInRegion, to endDate: SwiftDate.DateInRegion, increment: Foundation.DateComponents) -> [SwiftDate.DateInRegion]
+  public static func enumerateDates(from startDate: SwiftDate.DateInRegion, to endDate: SwiftDate.DateInRegion, increment: ((SwiftDate.DateInRegion) -> (Foundation.DateComponents))) -> [SwiftDate.DateInRegion]
+  public func dateAtStartOf(_ unit: Foundation.Calendar.Component) -> SwiftDate.DateInRegion
+  public func dateAtStartOf(_ units: [Foundation.Calendar.Component]) -> SwiftDate.DateInRegion
+  public func dateAtEndOf(_ unit: Foundation.Calendar.Component) -> SwiftDate.DateInRegion
+  public func dateAtEndOf(_ units: [Foundation.Calendar.Component]) -> SwiftDate.DateInRegion
+  public func dateBySet(_ components: [Foundation.Calendar.Component : Swift.Int?]) -> SwiftDate.DateInRegion?
+  public func dateBySet(hour: Swift.Int?, min: Swift.Int?, secs: Swift.Int?, ms: Swift.Int? = nil, options: SwiftDate.TimeCalculationOptions = TimeCalculationOptions()) -> SwiftDate.DateInRegion?
+  public func dateTruncated(at components: [Foundation.Calendar.Component]) -> SwiftDate.DateInRegion?
+  public func dateTruncated(from component: Foundation.Calendar.Component) -> SwiftDate.DateInRegion?
+  public func dateRoundedAt(_ style: SwiftDate.RoundDateMode) -> SwiftDate.DateInRegion
+  public func dateByAdding(_ count: Swift.Int, _ component: Foundation.Calendar.Component) -> SwiftDate.DateInRegion
+  public func dateAt(_ type: SwiftDate.DateRelatedType) -> SwiftDate.DateInRegion
+  public func addingTimeInterval(_ interval: Foundation.TimeInterval) -> SwiftDate.DateInRegion
+  public func convertTo(calendar: SwiftDate.CalendarConvertible? = nil, timezone: SwiftDate.ZoneConvertible? = nil, locale: SwiftDate.LocaleConvertible? = nil) -> SwiftDate.DateInRegion
+  public static func datesForWeekday(_ weekday: SwiftDate.WeekDay, inMonth month: Swift.Int, ofYear year: Swift.Int, region: SwiftDate.Region = SwiftDate.defaultRegion) -> [SwiftDate.DateInRegion]
+  public static func datesForWeekday(_ weekday: SwiftDate.WeekDay, from startDate: SwiftDate.DateInRegion, to endDate: SwiftDate.DateInRegion, region: SwiftDate.Region = SwiftDate.defaultRegion) -> [SwiftDate.DateInRegion]
+}
+extension SwiftDate.DateInRegion {
+  public func dateAt(weekdayOrdinal: Swift.Int, weekday: SwiftDate.WeekDay, monthNumber: Swift.Int? = nil, yearNumber: Swift.Int? = nil) -> SwiftDate.DateInRegion
+  public func dateAt(dayOfMonth: Swift.Int, monthNumber: Swift.Int? = nil, yearNumber: Swift.Int? = nil) -> SwiftDate.DateInRegion
+  public func dateAfter(weeks count: Swift.Int, on weekday: SwiftDate.WeekDay) -> SwiftDate.DateInRegion
+  public func nextWeekday(_ weekday: SwiftDate.WeekDay) -> SwiftDate.DateInRegion
+  public func next(_ weekday: SwiftDate.WeekDay, withWeekOfMonth weekNumber: Swift.Int, andMonthNumber monthNumber: Swift.Int? = nil) -> SwiftDate.DateInRegion
+  public func next(dayOfMonth: Swift.Int, monthOfYear: Swift.Int? = nil) -> SwiftDate.DateInRegion
+}
+public func - (lhs: SwiftDate.DateInRegion, rhs: SwiftDate.DateInRegion) -> Foundation.TimeInterval
+public func + (lhs: SwiftDate.DateInRegion, rhs: Foundation.DateComponents) -> SwiftDate.DateInRegion
+public func - (lhs: SwiftDate.DateInRegion, rhs: Foundation.DateComponents) -> SwiftDate.DateInRegion
+public func + (lhs: SwiftDate.DateInRegion, rhs: [Foundation.Calendar.Component : Swift.Int]) -> SwiftDate.DateInRegion
+public func - (lhs: SwiftDate.DateInRegion, rhs: [Foundation.Calendar.Component : Swift.Int]) -> SwiftDate.DateInRegion
+extension SwiftDate.DateInRegion {
+  public mutating func addTimeInterval(_ timeInterval: Foundation.TimeInterval)
+}
+public protocol DateRepresentable {
+  var year: Swift.Int { get }
+  var month: Swift.Int { get }
+  func monthName(_ style: SwiftDate.SymbolFormatStyle) -> Swift.String
+  var monthDays: Swift.Int { get }
+  var day: Swift.Int { get }
+  var dayOfYear: Swift.Int { get }
+  @available(iOS 9.0, macOS 10.11, *)
+  var ordinalDay: Swift.String { get }
+  var hour: Swift.Int { get }
+  var nearestHour: Swift.Int { get }
+  var minute: Swift.Int { get }
+  var second: Swift.Int { get }
+  var nanosecond: Swift.Int { get }
+  var msInDay: Swift.Int { get }
+  var weekday: Swift.Int { get }
+  func weekdayName(_ style: SwiftDate.SymbolFormatStyle, locale: SwiftDate.LocaleConvertible?) -> Swift.String
+  var weekOfYear: Swift.Int { get }
+  var weekOfMonth: Swift.Int { get }
+  var weekdayOrdinal: Swift.Int { get }
+  var firstDayOfWeek: Swift.Int { get }
+  var lastDayOfWeek: Swift.Int { get }
+  var yearForWeekOfYear: Swift.Int { get }
+  var quarter: Swift.Int { get }
+  func quarterName(_ style: SwiftDate.SymbolFormatStyle, locale: SwiftDate.LocaleConvertible?) -> Swift.String
+  var era: Swift.Int { get }
+  func eraName(_ style: SwiftDate.SymbolFormatStyle, locale: SwiftDate.LocaleConvertible?) -> Swift.String
+  var DSTOffset: Foundation.TimeInterval { get }
+  var date: Foundation.Date { get }
+  var region: SwiftDate.Region { get }
+  var calendar: Foundation.Calendar { get }
+  var dateComponents: Foundation.DateComponents { get }
+  var isToday: Swift.Bool { get }
+  var isYesterday: Swift.Bool { get }
+  var isTomorrow: Swift.Bool { get }
+  var isInWeekend: Swift.Bool { get }
+  var isInPast: Swift.Bool { get }
+  var isInFuture: Swift.Bool { get }
+  func formatter(format: Swift.String?, configuration: ((Foundation.DateFormatter) -> Swift.Void)?) -> Foundation.DateFormatter
+  func formatterForRegion(format: Swift.String?, configuration: ((inout Foundation.DateFormatter) -> Swift.Void)?) -> Foundation.DateFormatter
+  var customFormatter: Foundation.DateFormatter? { get set }
+  var sharedFormatter: Foundation.DateFormatter { get }
+  init?(_ string: Swift.String, format: Swift.String?, region: SwiftDate.Region)
+  init(seconds interval: Foundation.TimeInterval, region: SwiftDate.Region)
+  init(milliseconds interval: Swift.Int, region: SwiftDate.Region)
+  init?(components configuration: ((inout Foundation.DateComponents) -> Swift.Void), region: SwiftDate.Region?)
+  init?(components: Foundation.DateComponents, region: SwiftDate.Region?)
+  init(year: Swift.Int, month: Swift.Int, day: Swift.Int, hour: Swift.Int, minute: Swift.Int, second: Swift.Int, nanosecond: Swift.Int, region: SwiftDate.Region)
+  func convertTo(region: SwiftDate.Region) -> SwiftDate.DateInRegion
+  func toString(_ style: SwiftDate.DateToStringStyles?) -> Swift.String
+  func toFormat(_ format: Swift.String, locale: SwiftDate.LocaleConvertible?) -> Swift.String
+  func toRelative(since: SwiftDate.DateInRegion?, style: SwiftDate.RelativeFormatter.Style?, locale: SwiftDate.LocaleConvertible?) -> Swift.String
+  func toISO(_ options: SwiftDate.ISOFormatter.Options?) -> Swift.String
+  func toDotNET() -> Swift.String
+  func toSQL() -> Swift.String
+  func toRSS(alt: Swift.Bool) -> Swift.String
+  func toUnits(_ units: Swift.Set<Foundation.Calendar.Component>, to refDate: SwiftDate.DateRepresentable) -> [Foundation.Calendar.Component : Swift.Int]
+  func toUnit(_ unit: Foundation.Calendar.Component, to refDate: SwiftDate.DateRepresentable) -> Swift.Int
+}
+extension SwiftDate.DateRepresentable {
+  public var calendar: Foundation.Calendar {
+    get
+  }
+  public var year: Swift.Int {
+    get
+  }
+  public var month: Swift.Int {
+    get
+  }
+  public var monthDays: Swift.Int {
+    get
+  }
+  public func monthName(_ style: SwiftDate.SymbolFormatStyle) -> Swift.String
+  public var day: Swift.Int {
+    get
+  }
+  public var dayOfYear: Swift.Int {
+    get
+  }
+  @available(iOS 9.0, macOS 10.11, *)
+  public var ordinalDay: Swift.String {
+    get
+  }
+  public var hour: Swift.Int {
+    get
+  }
+  public var nearestHour: Swift.Int {
+    get
+  }
+  public var minute: Swift.Int {
+    get
+  }
+  public var second: Swift.Int {
+    get
+  }
+  public var nanosecond: Swift.Int {
+    get
+  }
+  public var msInDay: Swift.Int {
+    get
+  }
+  public var weekday: Swift.Int {
+    get
+  }
+  public func weekdayName(_ style: SwiftDate.SymbolFormatStyle, locale: SwiftDate.LocaleConvertible? = nil) -> Swift.String
+  public var weekOfYear: Swift.Int {
+    get
+  }
+  public var weekOfMonth: Swift.Int {
+    get
+  }
+  public var weekdayOrdinal: Swift.Int {
+    get
+  }
+  public var yearForWeekOfYear: Swift.Int {
+    get
+  }
+  public var firstDayOfWeek: Swift.Int {
+    get
+  }
+  public var lastDayOfWeek: Swift.Int {
+    get
+  }
+  public var quarter: Swift.Int {
+    get
+  }
+  public var isToday: Swift.Bool {
+    get
+  }
+  public var isYesterday: Swift.Bool {
+    get
+  }
+  public var isTomorrow: Swift.Bool {
+    get
+  }
+  public var isInWeekend: Swift.Bool {
+    get
+  }
+  public var isInPast: Swift.Bool {
+    get
+  }
+  public var isInFuture: Swift.Bool {
+    get
+  }
+  public func quarterName(_ style: SwiftDate.SymbolFormatStyle, locale: SwiftDate.LocaleConvertible? = nil) -> Swift.String
+  public var era: Swift.Int {
+    get
+  }
+  public func eraName(_ style: SwiftDate.SymbolFormatStyle, locale: SwiftDate.LocaleConvertible? = nil) -> Swift.String
+  public var DSTOffset: Foundation.TimeInterval {
+    get
+  }
+  public func formatter(format: Swift.String? = nil, configuration: ((Foundation.DateFormatter) -> Swift.Void)? = nil) -> Foundation.DateFormatter
+  public func formatterForRegion(format: Swift.String? = nil, configuration: ((inout Foundation.DateFormatter) -> Swift.Void)? = nil) -> Foundation.DateFormatter
+  public var sharedFormatter: Foundation.DateFormatter {
+    get
+  }
+  public func toString(_ style: SwiftDate.DateToStringStyles? = nil) -> Swift.String
+  public func toFormat(_ format: Swift.String, locale: SwiftDate.LocaleConvertible? = nil) -> Swift.String
+  public func toRelative(since: SwiftDate.DateInRegion? = nil, style: SwiftDate.RelativeFormatter.Style? = nil, locale: SwiftDate.LocaleConvertible? = nil) -> Swift.String
+  public func toISO(_ options: SwiftDate.ISOFormatter.Options? = nil) -> Swift.String
+  public func toDotNET() -> Swift.String
+  public func toRSS(alt: Swift.Bool) -> Swift.String
+  public func toSQL() -> Swift.String
+  public func convertTo(region: SwiftDate.Region) -> SwiftDate.DateInRegion
+  public func toUnits(_ units: Swift.Set<Foundation.Calendar.Component>, to refDate: SwiftDate.DateRepresentable) -> [Foundation.Calendar.Component : Swift.Int]
+  public func toUnit(_ unit: Foundation.Calendar.Component, to refDate: SwiftDate.DateRepresentable) -> Swift.Int
+}
+@_hasMissingDesignatedInitializers public class DOTNETParser : SwiftDate.StringToDateTransformable {
+  public static func parse(_ string: Swift.String) -> (seconds: Foundation.TimeInterval, tz: Foundation.TimeZone)?
+  public static func parse(_ string: Swift.String, region: SwiftDate.Region?, options: Any?) -> SwiftDate.DateInRegion?
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class DOTNETFormatter : SwiftDate.DateToStringTrasformable {
+  public static func format(_ date: SwiftDate.DateRepresentable, options: Any?) -> Swift.String
+  @objc deinit
+}
+public protocol DateToStringTrasformable {
+  static func format(_ date: SwiftDate.DateRepresentable, options: Any?) -> Swift.String
+}
+public protocol StringToDateTransformable {
+  static func parse(_ string: Swift.String, region: SwiftDate.Region?, options: Any?) -> SwiftDate.DateInRegion?
+}
+public enum DateToStringStyles {
+  case iso(SwiftDate.ISOFormatter.Options)
+  case extended
+  case rss
+  case altRSS
+  case dotNet
+  case httpHeader
+  case sql
+  case date(Foundation.DateFormatter.Style)
+  case time(Foundation.DateFormatter.Style)
+  case dateTime(Foundation.DateFormatter.Style)
+  case dateTimeMixed(dateStyle: Foundation.DateFormatter.Style, timeStyle: Foundation.DateFormatter.Style)
+  case custom(Swift.String)
+  case standard
+  case relative(style: SwiftDate.RelativeFormatter.Style?)
+  public func toString(_ date: SwiftDate.DateRepresentable) -> Swift.String
+}
+public enum StringToDateStyles {
+  case iso(SwiftDate.ISOParser.Options)
+  case extended
+  case rss
+  case altRSS
+  case dotNet
+  case sql
+  case httpHeader
+  case strict(Swift.String)
+  case custom(Swift.String)
+  case standard
+  public func toDate(_ string: Swift.String, region: SwiftDate.Region) -> SwiftDate.DateInRegion?
+}
+extension Swift.Int {
+  public var nanoseconds: Foundation.DateComponents {
+    get
+  }
+  public var seconds: Foundation.DateComponents {
+    get
+  }
+  public var minutes: Foundation.DateComponents {
+    get
+  }
+  public var hours: Foundation.DateComponents {
+    get
+  }
+  public var days: Foundation.DateComponents {
+    get
+  }
+  public var weeks: Foundation.DateComponents {
+    get
+  }
+  public var months: Foundation.DateComponents {
+    get
+  }
+  public var years: Foundation.DateComponents {
+    get
+  }
+  public var quarters: Foundation.DateComponents {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers public class ISOFormatter : SwiftDate.DateToStringTrasformable {
+  public struct Options : Swift.OptionSet {
+    public let rawValue: Swift.Int
+    public init(rawValue: Swift.Int)
+    public static let withYear: SwiftDate.ISOFormatter.Options
+    public static let withMonth: SwiftDate.ISOFormatter.Options
+    public static let withWeekOfYear: SwiftDate.ISOFormatter.Options
+    public static let withDay: SwiftDate.ISOFormatter.Options
+    public static let withTime: SwiftDate.ISOFormatter.Options
+    public static let withTimeZone: SwiftDate.ISOFormatter.Options
+    public static let withSpaceBetweenDateAndTime: SwiftDate.ISOFormatter.Options
+    public static let withDashSeparatorInDate: SwiftDate.ISOFormatter.Options
+    public static let withFullDate: SwiftDate.ISOFormatter.Options
+    public static let withFullTime: SwiftDate.ISOFormatter.Options
+    public static let withInternetDateTime: SwiftDate.ISOFormatter.Options
+    public static let withInternetDateTimeExtended: SwiftDate.ISOFormatter.Options
+    public static let withoutTZSeparators: SwiftDate.ISOFormatter.Options
+    public var dateFormat: Swift.String {
+      get
+    }
+    public typealias ArrayLiteralElement = SwiftDate.ISOFormatter.Options
+    public typealias Element = SwiftDate.ISOFormatter.Options
+    public typealias RawValue = Swift.Int
+  }
+  public static func format(_ date: SwiftDate.DateRepresentable, options: Any?) -> Swift.String
+  @objc deinit
+}
+public enum ISO8601ParserError : Swift.Error {
+  case eof
+  case notDigit
+  case notDouble
+  case invalid
+  public static func == (a: SwiftDate.ISO8601ParserError, b: SwiftDate.ISO8601ParserError) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public class ISOParser : SwiftDate.StringToDateTransformable {
+  public struct Options {
+    public init(strict: Swift.Bool = false)
+  }
+  public typealias ISOString = Swift.String.UnicodeScalarView
+  public typealias ISOIndex = Swift.String.UnicodeScalarView.Index
+  public typealias ISOChar = Swift.UnicodeScalar
+  public typealias ISOParsedDate = (date: Foundation.Date?, timezone: Foundation.TimeZone?)
+  public struct ParsedDate {
+    public enum DateStyle {
+      case monthAndDate
+      case week
+      case dateOnly
+      public static func == (a: SwiftDate.ISOParser.ParsedDate.DateStyle, b: SwiftDate.ISOParser.ParsedDate.DateStyle) -> Swift.Bool
+      public func hash(into hasher: inout Swift.Hasher)
+      public var hashValue: Swift.Int {
+        get
+      }
+    }
+  }
+  public init?(_ src: Swift.String, options: SwiftDate.ISOParser.Options? = nil)
+  @discardableResult
+  public func seek(_ offset: Swift.Int = 1) -> SwiftDate.ISOParser.ISOChar?
+  @discardableResult
+  public func current(_ next: Swift.Bool = false) -> SwiftDate.ISOParser.ISOChar?
+  public static func date(from string: Swift.String) -> SwiftDate.ISOParser.ISOParsedDate?
+  public static func parse(_ string: Swift.String, region: SwiftDate.Region?, options: Any?) -> SwiftDate.DateInRegion?
+  @objc deinit
+}
+public protocol LocaleConvertible {
+  func toLocale() -> Foundation.Locale
+}
+extension Foundation.Locale : SwiftDate.LocaleConvertible {
+  public func toLocale() -> Foundation.Locale
+}
+public enum Locales : Swift.String, SwiftDate.LocaleConvertible {
+  case current
+  case autoUpdating
+  case afrikaans
+  case afrikaansNamibia
+  case afrikaansSouthAfrica
+  case aghem
+  case aghemCameroon
+  case akan
+  case akanGhana
+  case albanian
+  case albanianAlbania
+  case albanianKosovo
+  case albanianMacedonia
+  case amharic
+  case amharicEthiopia
+  case arabic
+  case arabicAlgeria
+  case arabicBahrain
+  case arabicChad
+  case arabicComoros
+  case arabicDjibouti
+  case arabicEgypt
+  case arabicEritrea
+  case arabicIraq
+  case arabicIsrael
+  case arabicJordan
+  case arabicKuwait
+  case arabicLebanon
+  case arabicLibya
+  case arabicMauritania
+  case arabicMorocco
+  case arabicOman
+  case arabicPalestinianTerritories
+  case arabicQatar
+  case arabicSaudiArabia
+  case arabicSomalia
+  case arabicSouthSudan
+  case arabicSudan
+  case arabicSyria
+  case arabicTunisia
+  case arabicUnitedArabEmirates
+  case arabicWesternSahara
+  case arabicWorld
+  case arabicYemen
+  case armenian
+  case armenianArmenia
+  case assamese
+  case assameseIndia
+  case asu
+  case asuTanzania
+  case azerbaijani
+  case azerbaijaniAzerbaijan
+  case azerbaijaniCyrillic
+  case azerbaijaniCyrillicAzerbaijan
+  case bafia
+  case bafiaCameroon
+  case bambara
+  case bambaraMali
+  case basaa
+  case basaaCameroon
+  case basque
+  case basqueSpain
+  case belarusian
+  case belarusianBelarus
+  case bemba
+  case bembaZambia
+  case bena
+  case benaTanzania
+  case bengali
+  case bengaliBangladesh
+  case engaliIndia
+  case bodo
+  case bodoIndia
+  case bosnian
+  case bosnianBosniaHerzegovina
+  case bosnianCyrillic
+  case bosnianCyrillicBosniaHerzegovina
+  case breton
+  case bretonFrance
+  case bulgarian
+  case bulgarianBulgaria
+  case burmese
+  case burmeseMyanmarBurma
+  case catalan
+  case catalanAndorra
+  case catalanFrance
+  case catalanItaly
+  case catalanSpain
+  case centralAtlasTamazight
+  case centralAtlasTamazightMorocco
+  case centralKurdish
+  case centralKurdishIran
+  case centralKurdishIraq
+  case cherokee
+  case cherokeeUnitedStates
+  case chiga
+  case chigaUganda
+  case chinese
+  case chineseChina
+  case chineseHongKongSarChina
+  case chineseMacauSarChina
+  case chineseSimplified
+  case chineseSimplifiedHongKongSarChina
+  case chineseSimplifiedMacauSarChina
+  case chineseSingapore
+  case chineseTaiwan
+  case chineseTraditional
+  case colognian
+  case colognianGermany
+  case cornish
+  case cornishUnitedKingdom
+  case croatian
+  case croatianBosniaHerzegovina
+  case croatianCroatia
+  case czech
+  case czechCzechRepublic
+  case danish
+  case danishDenmark
+  case danishGreenland
+  case duala
+  case dualaCameroon
+  case dutch
+  case dutchAruba
+  case dutchBelgium
+  case dutchCaribbeanNetherlands
+  case dutchCuraao
+  case dutchNetherlands
+  case dutchSintMaarten
+  case dutchSuriname
+  case dzongkha
+  case dzongkhaBhutan
+  case embu
+  case embuKenya
+  case english
+  case englishAlbania
+  case englishAmericanSamoa
+  case englishAndorra
+  case englishAnguilla
+  case englishAntiguaBarbuda
+  case englishAustralia
+  case englishAustria
+  case englishBahamas
+  case englishBarbados
+  case englishBelgium
+  case englishBelize
+  case englishBermuda
+  case englishBosniaHerzegovina
+  case englishBotswana
+  case englishBritishIndianOceanTerritory
+  case englishBritishVirginIslands
+  case englishCameroon
+  case englishCanada
+  case englishCaymanIslands
+  case englishChristmasIsland
+  case englishCocosKeelingIslands
+  case englishCookIslands
+  case englishCroatia
+  case englishCyprus
+  case englishCzechRepublic
+  case englishDenmark
+  case englishDiegoGarcia
+  case englishDominica
+  case englishEritrea
+  case englishEstonia
+  case englishEurope
+  case englishFalklandIslands
+  case englishFiji
+  case englishFinland
+  case englishFrance
+  case englishGambia
+  case englishGermany
+  case englishGhana
+  case englishGibraltar
+  case englishGreece
+  case englishGrenada
+  case englishGuam
+  case englishGuernsey
+  case englishGuyana
+  case englishHongKongSarChina
+  case englishHungary
+  case englishIceland
+  case englishIndia
+  case englishIreland
+  case englishIsleOfMan
+  case englishIsrael
+  case englishItaly
+  case englishJamaica
+  case englishJersey
+  case englishKenya
+  case englishKiribati
+  case englishLatvia
+  case englishLesotho
+  case englishLiberia
+  case englishLithuania
+  case englishLuxembourg
+  case englishMacauSarChina
+  case englishMadagascar
+  case englishMalawi
+  case englishMalaysia
+  case englishMalta
+  case englishMarshallIslands
+  case englishMauritius
+  case englishMicronesia
+  case englishMontenegro
+  case englishMontserrat
+  case englishNamibia
+  case englishNauru
+  case englishNetherlands
+  case englishNewZealand
+  case englishNigeria
+  case englishNiue
+  case englishNorfolkIsland
+  case englishNorthernMarianaIslands
+  case englishNorway
+  case englishPakistan
+  case englishPalau
+  case englishPapuaNewGuinea
+  case englishPhilippines
+  case englishPitcairnIslands
+  case englishPoland
+  case englishPortugal
+  case englishPuertoRico
+  case englishRomania
+  case englishRussia
+  case englishRwanda
+  case englishSamoa
+  case englishSeychelles
+  case englishSierraLeone
+  case englishSingapore
+  case englishSintMaarten
+  case englishSlovakia
+  case englishSlovenia
+  case englishSolomonIslands
+  case englishSouthAfrica
+  case englishSouthSudan
+  case englishSpain
+  case englishStHelena
+  case englishStKittsNevis
+  case englishStLucia
+  case englishStVincentGrenadines
+  case englishSudan
+  case englishSwaziland
+  case englishSweden
+  case englishSwitzerland
+  case englishTanzania
+  case englishTokelau
+  case englishTonga
+  case englishTrinidadTobago
+  case englishTurkey
+  case englishTurksCaicosIslands
+  case englishTuvalu
+  case englishUSOutlyingIslands
+  case englishUSVirginIslands
+  case englishUganda
+  case englishUnitedKingdom
+  case englishUnitedStates
+  case englishUnitedStatesComputer
+  case englishVanuatu
+  case englishWorld
+  case englishZambia
+  case englishZimbabwe
+  case esperanto
+  case estonian
+  case estonianEstonia
+  case ewe
+  case eweGhana
+  case eweTogo
+  case ewondo
+  case ewondoCameroon
+  case faroese
+  case faroeseFaroeIslands
+  case filipino
+  case filipinoPhilippines
+  case finnish
+  case finnishFinland
+  case french
+  case frenchAlgeria
+  case frenchBelgium
+  case frenchBenin
+  case frenchBurkinaFaso
+  case frenchBurundi
+  case frenchCameroon
+  case frenchCanada
+  case frenchCentralAfricanRepublic
+  case frenchChad
+  case frenchComoros
+  case frenchCongoBrazzaville
+  case frenchCongoKinshasa
+  case frenchCteDivoire
+  case frenchDjibouti
+  case frenchEquatorialGuinea
+  case frenchFrance
+  case frenchFrenchGuiana
+  case frenchFrenchPolynesia
+  case frenchGabon
+  case frenchGuadeloupe
+  case frenchGuinea
+  case frenchHaiti
+  case frenchLuxembourg
+  case frenchMadagascar
+  case frenchMali
+  case frenchMartinique
+  case frenchMauritania
+  case frenchMauritius
+  case frenchMayotte
+  case frenchMonaco
+  case frenchMorocco
+  case frenchNewCaledonia
+  case frenchNiger
+  case frenchRunion
+  case frenchRwanda
+  case frenchSenegal
+  case frenchSeychelles
+  case frenchStBarthlemy
+  case frenchStMartin
+  case frenchStPierreMiquelon
+  case frenchSwitzerland
+  case frenchSyria
+  case frenchTogo
+  case frenchTunisia
+  case frenchVanuatu
+  case frenchWallisFutuna
+  case friulian
+  case friulianItaly
+  case fulah
+  case fulahCameroon
+  case fulahGuinea
+  case fulahMauritania
+  case fulahSenegal
+  case galician
+  case galicianSpain
+  case ganda
+  case gandaUganda
+  case georgian
+  case georgianGeorgia
+  case german
+  case germanAustria
+  case germanBelgium
+  case germanGermany
+  case germanLiechtenstein
+  case germanLuxembourg
+  case germanSwitzerland
+  case greek
+  case greekCyprus
+  case greekGreece
+  case gujarati
+  case gujaratiIndia
+  case gusii
+  case gusiiKenya
+  case hausa
+  case hausaGhana
+  case hausaNiger
+  case hausaNigeria
+  case hawaiian
+  case hawaiianUnitedStates
+  case hebrew
+  case hebrewIsrael
+  case hindi
+  case hindiIndia
+  case hungarian
+  case hungarianHungary
+  case icelandic
+  case icelandicIceland
+  case igbo
+  case igboNigeria
+  case inariSami
+  case inariSamiFinland
+  case indonesian
+  case indonesianIndonesia
+  case inuktitut
+  case inuktitutUnifiedCanadianAboriginalSyllabics
+  case inuktitutUnifiedCanadianAboriginalSyllabicsCanada
+  case irish
+  case irishIreland
+  case italian
+  case italianItaly
+  case italianSanMarino
+  case italianSwitzerland
+  case japanese
+  case japaneseJapan
+  case jolaFonyi
+  case jolaFonyiSenegal
+  case kabuverdianu
+  case kabuverdianuCapeVerde
+  case kabyle
+  case kabyleAlgeria
+  case kako
+  case kakoCameroon
+  case kalaallisut
+  case kalaallisutGreenland
+  case kalenjin
+  case kalenjinKenya
+  case kamba
+  case kambaKenya
+  case kannada
+  case kannadaIndia
+  case kashmiri
+  case kashmiriArabic
+  case kashmiriArabicIndia
+  case kazakh
+  case kazakhKazakhstan
+  case khmer
+  case khmerCambodia
+  case kikuyu
+  case kikuyuKenya
+  case kinyarwanda
+  case kinyarwandaRwanda
+  case konkani
+  case konkaniIndia
+  case korean
+  case koreanNorthKorea
+  case koreanSouthKorea
+  case koyraChiini
+  case koyraChiiniMali
+  case koyraboroSenni
+  case koyraboroSenniMali
+  case kwasio
+  case kwasioCameroon
+  case kyrgyz
+  case kyrgyzKyrgyzstan
+  case lakota
+  case lakotaUnitedStates
+  case langi
+  case langiTanzania
+  case lao
+  case laoLaos
+  case latvian
+  case latvianLatvia
+  case lingala
+  case lingalaAngola
+  case lingalaCentralAfricanRepublic
+  case lingalaCongoBrazzaville
+  case lingalaCongoKinshasa
+  case lithuanian
+  case lithuanianLithuania
+  case lowerSorbian
+  case lowerSorbianGermany
+  case lubaKatanga
+  case lubaKatangaCongoKinshasa
+  case luo
+  case luoKenya
+  case luxembourgish
+  case luxembourgishLuxembourg
+  case luyia
+  case luyiaKenya
+  case macedonian
+  case macedonianMacedonia
+  case machame
+  case machameTanzania
+  case makhuwaMeetto
+  case makhuwaMeettoMozambique
+  case makonde
+  case makondeTanzania
+  case malagasy
+  case malagasyMadagascar
+  case malay
+  case malayArabic
+  case malayArabicBrunei
+  case malayArabicMalaysia
+  case malayBrunei
+  case malayMalaysia
+  case malaySingapore
+  case malayalam
+  case malayalamIndia
+  case maltese
+  case malteseMalta
+  case manx
+  case manxIsleOfMan
+  case marathi
+  case marathiIndia
+  case masai
+  case masaiKenya
+  case masaiTanzania
+  case meru
+  case meruKenya
+  case meta
+  case metaCameroon
+  case mongolian
+  case mongolianMongolia
+  case morisyen
+  case morisyenMauritius
+  case mundang
+  case mundangCameroon
+  case nama
+  case namaNamibia
+  case nepali
+  case nepaliIndia
+  case nepaliNepal
+  case ngiemboon
+  case ngiemboonCameroon
+  case ngomba
+  case ngombaCameroon
+  case northNdebele
+  case northNdebeleZimbabwe
+  case northernSami
+  case northernSamiFinland
+  case northernSamiNorway
+  case northernSamiSweden
+  case norwegianBokml
+  case norwegianBokmlNorway
+  case norwegianBokmlSvalbardJanMayen
+  case norwegianNynorsk
+  case norwegianNynorskNorway
+  case nuer
+  case nuerSudan
+  case nyankole
+  case nyankoleUganda
+  case oriya
+  case oriyaIndia
+  case oromo
+  case oromoEthiopia
+  case oromoKenya
+  case ossetic
+  case osseticGeorgia
+  case osseticRussia
+  case pashto
+  case pashtoAfghanistan
+  case persian
+  case persianAfghanistan
+  case persianIran
+  case polish
+  case polishPoland
+  case portuguese
+  case portugueseAngola
+  case portugueseBrazil
+  case portugueseCapeVerde
+  case portugueseGuineaBissau
+  case portugueseMacauSarChina
+  case portugueseMozambique
+  case portuguesePortugal
+  case portugueseSoTomPrncipe
+  case portugueseTimorLeste
+  case punjabi
+  case punjabiArabic
+  case punjabiArabicPakistan
+  case punjabiIndia
+  case quechua
+  case quechuaBolivia
+  case quechuaEcuador
+  case quechuaPeru
+  case romanian
+  case romanianMoldova
+  case romanianRomania
+  case romansh
+  case romanshSwitzerland
+  case rombo
+  case romboTanzania
+  case rundi
+  case rundiBurundi
+  case russian
+  case russianBelarus
+  case russianKazakhstan
+  case russianKyrgyzstan
+  case russianMoldova
+  case russianRussia
+  case russianUkraine
+  case rwa
+  case rwaTanzania
+  case sakha
+  case sakhaRussia
+  case samburu
+  case samburuKenya
+  case sango
+  case sangoCentralAfricanRepublic
+  case sangu
+  case sanguTanzania
+  case scottishGaelic
+  case scottishGaelicUnitedKingdom
+  case sena
+  case senaMozambique
+  case serbian
+  case serbianBosniaHerzegovina
+  case serbianKosovo
+  case serbianLatin
+  case serbianLatinBosniaHerzegovina
+  case serbianLatinKosovo
+  case serbianLatinMontenegro
+  case serbianLatinSerbia
+  case serbianMontenegro
+  case serbianSerbia
+  case shambala
+  case shambalaTanzania
+  case shona
+  case shonaZimbabwe
+  case sichuanYi
+  case sichuanYiChina
+  case sinhala
+  case sinhalaSriLanka
+  case slovak
+  case slovakSlovakia
+  case slovenian
+  case slovenianSlovenia
+  case soga
+  case sogaUganda
+  case somali
+  case somaliDjibouti
+  case somaliEthiopia
+  case somaliKenya
+  case somaliSomalia
+  case spanish
+  case spanishArgentina
+  case spanishBolivia
+  case spanishCanaryIslands
+  case spanishCeutaMelilla
+  case spanishChile
+  case spanishColombia
+  case spanishCostaRica
+  case spanishCuba
+  case spanishDominicanRepublic
+  case spanishEcuador
+  case spanishElSalvador
+  case spanishEquatorialGuinea
+  case spanishGuatemala
+  case spanishHonduras
+  case spanishLatinAmerica
+  case spanishMexico
+  case spanishNicaragua
+  case spanishPanama
+  case spanishParaguay
+  case spanishPeru
+  case spanishPhilippines
+  case spanishPuertoRico
+  case spanishSpain
+  case spanishUnitedStates
+  case spanishUruguay
+  case spanishVenezuela
+  case standardMoroccanTamazight
+  case standardMoroccanTamazightMorocco
+  case swahili
+  case swahiliCongoKinshasa
+  case swahiliKenya
+  case swahiliTanzania
+  case swahiliUganda
+  case swedish
+  case swedishlandIslands
+  case swedishFinland
+  case swedishSweden
+  case swissGerman
+  case swissGermanFrance
+  case swissGermanLiechtenstein
+  case swissGermanSwitzerland
+  case tachelhit
+  case tachelhitMorocco
+  case tachelhitTifinagh
+  case tachelhitTifinaghMorocco
+  case taita
+  case taitaKenya
+  case tajik
+  case tajikTajikistan
+  case tamil
+  case tamilIndia
+  case tamilMalaysia
+  case tamilSingapore
+  case tamilSriLanka
+  case tasawaq
+  case tasawaqNiger
+  case telugu
+  case teluguIndia
+  case teso
+  case tesoKenya
+  case tesoUganda
+  case thai
+  case thaiThailand
+  case tibetan
+  case tibetanChina
+  case tibetanIndia
+  case tigrinya
+  case tigrinyaEritrea
+  case tigrinyaEthiopia
+  case tongan
+  case tonganTonga
+  case turkish
+  case turkishCyprus
+  case turkishTurkey
+  case turkmen
+  case turkmenTurkmenistan
+  case ukrainian
+  case ukrainianUkraine
+  case upperSorbian
+  case upperSorbianGermany
+  case urdu
+  case urduIndia
+  case urduPakistan
+  case uyghur
+  case uyghurArabic
+  case uyghurArabicChina
+  case uzbek
+  case uzbekArabic
+  case uzbekArabicAfghanistan
+  case uzbekLatin
+  case uzbekLatinUzbekistan
+  case uzbekUzbekistan
+  case vai
+  case vaiLatin
+  case vaiLatinLiberia
+  case vaiLiberia
+  case vietnamese
+  case vietnameseVietnam
+  case vunjo
+  case vunjoTanzania
+  case walser
+  case walserSwitzerland
+  case welsh
+  case welshUnitedKingdom
+  case westernFrisian
+  case westernFrisianNetherlands
+  case yangben
+  case yangbenCameroon
+  case yiddish
+  case yiddishWorld
+  case yoruba
+  case yorubaBenin
+  case yorubaNigeria
+  case zarma
+  case zarmaNiger
+  case zulu
+  case zuluSouthAfrica
+  public func toLocale() -> Foundation.Locale
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public struct Region : Swift.Decodable, Swift.Encodable, Swift.Equatable, Swift.Hashable, Swift.CustomStringConvertible {
+  public let calendar: Foundation.Calendar
+  public var locale: Foundation.Locale {
+    get
+  }
+  public var timeZone: Foundation.TimeZone {
+    get
+  }
+  public var description: Swift.String {
+    get
+  }
+  public func hash(into hasher: inout Swift.Hasher)
+  public init(calendar: SwiftDate.CalendarConvertible = SwiftDate.defaultRegion.calendar, zone: SwiftDate.ZoneConvertible = SwiftDate.defaultRegion.timeZone, locale: SwiftDate.LocaleConvertible = SwiftDate.defaultRegion.locale)
+  public init(fromDateComponents components: Foundation.DateComponents)
+  public static var UTC: SwiftDate.Region {
+    get
+  }
+  public static var local: SwiftDate.Region {
+    get
+  }
+  public static var ISO: SwiftDate.Region {
+    get
+  }
+  public static var current: SwiftDate.Region {
+    get
+  }
+  public static func currentIn(locale: SwiftDate.LocaleConvertible? = nil, calendar: SwiftDate.CalendarConvertible? = nil) -> SwiftDate.Region
+  public func nowInThisRegion() -> SwiftDate.DateInRegion
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+  public static func == (lhs: SwiftDate.Region, rhs: SwiftDate.Region) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers public class RelativeFormatter : SwiftDate.DateToStringTrasformable {
+  public static var allLanguages: [SwiftDate.RelativeFormatterLanguage] {
+    get
+  }
+  public static func format(_ date: SwiftDate.DateRepresentable, options: Any?) -> Swift.String
+  public static func format(date: SwiftDate.DateRepresentable, to toDate: SwiftDate.DateRepresentable? = nil, style: SwiftDate.RelativeFormatter.Style?, locale fixedLocale: Foundation.Locale? = nil) -> Swift.String
+  @objc deinit
+}
+extension SwiftDate.RelativeFormatter {
+  public enum PluralForm : Swift.String {
+    case zero, one, two, few, many, other
+    public init?(rawValue: Swift.String)
+    public typealias RawValue = Swift.String
+    public var rawValue: Swift.String {
+      get
+    }
+  }
+  public struct Style {
+    public var flavours: [SwiftDate.RelativeFormatter.Flavour]
+    public var gradation: SwiftDate.RelativeFormatter.Gradation
+    public var allowedUnits: [SwiftDate.RelativeFormatter.Unit]?
+    public init(flavours: [SwiftDate.RelativeFormatter.Flavour], gradation: SwiftDate.RelativeFormatter.Gradation, allowedUnits units: [SwiftDate.RelativeFormatter.Unit]? = nil)
+  }
+  public static func defaultStyle() -> SwiftDate.RelativeFormatter.Style
+  public static func timeStyle() -> SwiftDate.RelativeFormatter.Style
+  public static func twitterStyle() -> SwiftDate.RelativeFormatter.Style
+}
+extension SwiftDate.RelativeFormatter {
+  public enum Flavour : Swift.String {
+    case long
+    case longTime
+    case longConvenient
+    case short
+    case shortTime
+    case shortConvenient
+    case narrow
+    case tiny
+    case quantify
+    public init?(rawValue: Swift.String)
+    public typealias RawValue = Swift.String
+    public var rawValue: Swift.String {
+      get
+    }
+  }
+}
+extension SwiftDate.RelativeFormatter {
+  public struct Gradation {
+    public struct Rule {
+      public enum ThresholdType {
+        case value(Swift.Double?)
+        case function(((Foundation.TimeInterval) -> (Swift.Double?)))
+      }
+      public enum RoundingStrategy {
+        case regularRound
+        case ceiling
+        case flooring
+        case custom((Swift.Double) -> Swift.Double)
+      }
+      public var unit: SwiftDate.RelativeFormatter.Unit
+      public var threshold: SwiftDate.RelativeFormatter.Gradation.Rule.ThresholdType?
+      public var granularity: Swift.Double?
+      public var roundingStrategy: SwiftDate.RelativeFormatter.Gradation.Rule.RoundingStrategy
+      public var thresholdPrevious: [SwiftDate.RelativeFormatter.Unit : Swift.Double]?
+      public typealias CustomFormatter = ((SwiftDate.DateRepresentable) -> (Swift.String))
+      public var customFormatter: SwiftDate.RelativeFormatter.Gradation.Rule.CustomFormatter?
+      public init(_ unit: SwiftDate.RelativeFormatter.Unit, threshold: SwiftDate.RelativeFormatter.Gradation.Rule.ThresholdType?, granularity: Swift.Double? = nil, roundingStrategy: SwiftDate.RelativeFormatter.Gradation.Rule.RoundingStrategy = .regularRound, prev: [SwiftDate.RelativeFormatter.Unit : Swift.Double]? = nil, formatter: SwiftDate.RelativeFormatter.Gradation.Rule.CustomFormatter? = nil)
+    }
+    public subscript(unit: SwiftDate.RelativeFormatter.Unit) -> SwiftDate.RelativeFormatter.Gradation.Rule? {
+      get
+    }
+    public subscript(index: Swift.Int) -> SwiftDate.RelativeFormatter.Gradation.Rule? {
+      get
+    }
+    public init(_ rules: [SwiftDate.RelativeFormatter.Gradation.Rule])
+    public func filtered(byUnits units: [SwiftDate.RelativeFormatter.Unit]) -> SwiftDate.RelativeFormatter.Gradation
+    public static func canonical() -> SwiftDate.RelativeFormatter.Gradation
+    public static func convenient() -> SwiftDate.RelativeFormatter.Gradation
+    public static func twitter() -> SwiftDate.RelativeFormatter.Gradation
+  }
+}
+extension SwiftDate.RelativeFormatter {
+  public enum Unit : Swift.String {
+    case now
+    case second
+    case minute
+    case hour
+    case halfHour
+    case day
+    case week
+    case month
+    case year
+    case quarter
+    case other
+    public var factor: Swift.Double {
+      get
+    }
+    public init?(rawValue: Swift.String)
+    public typealias RawValue = Swift.String
+    public var rawValue: Swift.String {
+      get
+    }
+  }
+}
+public enum RelativeFormatterLanguage : Swift.String, Swift.CaseIterable {
+  case af
+  case am
+  case ar_AE
+  case ar
+  case `as`
+  case az
+  case be
+  case bg
+  case bn
+  case br
+  case bs
+  case bs_Cyrl
+  case ca
+  case cz
+  case cy
+  case cs
+  case da
+  case de
+  case dsb
+  case dz
+  case ee
+  case el
+  case en
+  case es_AR
+  case es_PY
+  case es_MX
+  case es_US
+  case es
+  case et
+  case eu
+  case fa
+  case fi
+  case fil
+  case fo
+  case fr_CA
+  case fr
+  case fur
+  case fy
+  case ga
+  case gd
+  case gl
+  case gu
+  case he
+  case hi
+  case hr
+  case hsb
+  case hu
+  case hy
+  case id
+  case `is`
+  case it
+  case ja
+  case jgo
+  case ka
+  case kea
+  case kk
+  case kl
+  case km
+  case kn
+  case ko
+  case kok
+  case ksh
+  case ky
+  case lb
+  case lkt
+  case lo
+  case lt
+  case lv
+  case mk
+  case ml
+  case mn
+  case mr
+  case ms
+  case mt
+  case my
+  case mzn
+  case nb
+  case ne
+  case nl
+  case nn
+  case or
+  case pa
+  case pl
+  case ps
+  case pt
+  case ro
+  case ru
+  case sah
+  case sd
+  case se_FI
+  case se
+  case si
+  case sk
+  case sl
+  case sq
+  case sr_Latn
+  case sr
+  case sv
+  case sw
+  case ta
+  case te
+  case th
+  case ti
+  case tk
+  case to
+  case tr
+  case ug
+  case uk
+  case ur_IN
+  case ur
+  case uz_Cyrl
+  case uz
+  case vi
+  case wae
+  case yue_Hans
+  case yue_Hant
+  case zh_Hans_HK
+  case zh_Hans_MO
+  case zh_Hans_SG
+  case zh_Hant_HK
+  case zh_Hant_MO
+  case zh_Hans
+  case zh_Hant
+  case zh
+  case zu
+  public var flavours: [Swift.String : Any] {
+    get
+  }
+  public var identifier: Swift.String {
+    get
+  }
+  public func quantifyKey(forValue value: Swift.Double) -> SwiftDate.RelativeFormatter.PluralForm?
+  public init?(rawValue: Swift.String)
+  public typealias AllCases = [SwiftDate.RelativeFormatterLanguage]
+  public typealias RawValue = Swift.String
+  public static var allCases: [SwiftDate.RelativeFormatterLanguage] {
+    get
+  }
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public protocol DateParsable {
+  func toDate(_ format: Swift.String?, region: SwiftDate.Region) -> SwiftDate.DateInRegion?
+  func toDate(_ formats: [Swift.String], region: SwiftDate.Region) -> SwiftDate.DateInRegion?
+  func toDate(style: SwiftDate.StringToDateStyles, region: SwiftDate.Region) -> SwiftDate.DateInRegion?
+  func toISODate(_ options: SwiftDate.ISOParser.Options?, region: SwiftDate.Region?) -> SwiftDate.DateInRegion?
+  func toDotNETDate(region: SwiftDate.Region) -> SwiftDate.DateInRegion?
+  func toRSSDate(alt: Swift.Bool, region: SwiftDate.Region) -> SwiftDate.DateInRegion?
+  func toSQLDate(region: SwiftDate.Region) -> SwiftDate.DateInRegion?
+}
+extension Swift.String : SwiftDate.DateParsable {
+  public func toDate(_ format: Swift.String? = nil, region: SwiftDate.Region = SwiftDate.defaultRegion) -> SwiftDate.DateInRegion?
+  public func toDate(_ formats: [Swift.String], region: SwiftDate.Region) -> SwiftDate.DateInRegion?
+  public func toDate(style: SwiftDate.StringToDateStyles, region: SwiftDate.Region = SwiftDate.defaultRegion) -> SwiftDate.DateInRegion?
+  public func toISODate(_ options: SwiftDate.ISOParser.Options? = nil, region: SwiftDate.Region? = nil) -> SwiftDate.DateInRegion?
+  public func toDotNETDate(region: SwiftDate.Region = Region.ISO) -> SwiftDate.DateInRegion?
+  public func toRSSDate(alt: Swift.Bool, region: SwiftDate.Region = Region.ISO) -> SwiftDate.DateInRegion?
+  public func toSQLDate(region: SwiftDate.Region = Region.ISO) -> SwiftDate.DateInRegion?
+  public func asLocale() -> Foundation.Locale
+}
+public struct SwiftDate {
+  public static var defaultRegion: SwiftDate.Region
+  public static var autoFormats: [Swift.String] {
+    get
+    set
+  }
+  public static func resetAutoFormats()
+}
+extension Swift.Double {
+  public struct ComponentsFormatterOptions {
+    public var allowsFractionalUnits: Swift.Bool?
+    public var allowedUnits: Foundation.NSCalendar.Unit?
+    public var collapsesLargestUnit: Swift.Bool?
+    public var maximumUnitCount: Swift.Int?
+    public var zeroFormattingBehavior: Foundation.DateComponentsFormatter.ZeroFormattingBehavior?
+    public var unitsStyle: Foundation.DateComponentsFormatter.UnitsStyle?
+    public var locale: SwiftDate.LocaleConvertible? {
+      get
+      set
+    }
+    public var calendar: Foundation.Calendar
+    public func apply(toFormatter formatter: Foundation.DateComponentsFormatter)
+    public init()
+  }
+  public func toString(options callback: ((inout Swift.Double.ComponentsFormatterOptions) -> Swift.Void)? = nil) -> Swift.String
+  public func toIntervalString(options callback: ((inout Swift.Double.ComponentsFormatterOptions) -> Swift.Void)? = nil) -> Swift.String
+  public func toString(options: Swift.Double.ComponentsFormatterOptions) -> Swift.String
+  public func toClock(zero: Foundation.DateComponentsFormatter.ZeroFormattingBehavior = [.pad, .dropLeading]) -> Swift.String
+  public func toUnits(_ units: Swift.Set<Foundation.Calendar.Component>, to refDate: SwiftDate.DateInRegion? = nil) -> [Foundation.Calendar.Component : Swift.Int]
+  public func toUnit(_ component: Foundation.Calendar.Component, to refDate: SwiftDate.DateInRegion? = nil) -> Swift.Int?
+}
+open class TimePeriod : SwiftDate.TimePeriodProtocol {
+  public var start: SwiftDate.DateInRegion?
+  public var end: SwiftDate.DateInRegion?
+  public init()
+  public init(start: SwiftDate.DateInRegion?, end: SwiftDate.DateInRegion?)
+  public init(start: SwiftDate.DateInRegion, duration: Foundation.TimeInterval)
+  public init(end: SwiftDate.DateInRegion, duration: Foundation.TimeInterval)
+  public init(start: SwiftDate.DateInRegion, duration: Foundation.DateComponents)
+  public init(end: SwiftDate.DateInRegion, duration: Foundation.DateComponents)
+  public static func infinity() -> SwiftDate.TimePeriod
+  public func shifted(by timeInterval: Foundation.TimeInterval) -> SwiftDate.TimePeriod
+  public func shifted(by components: Foundation.DateComponents) -> SwiftDate.TimePeriod
+  public func lengthened(by timeInterval: Foundation.TimeInterval, at anchor: SwiftDate.TimePeriodAnchor) -> SwiftDate.TimePeriod
+  public func shortened(by timeInterval: Foundation.TimeInterval, at anchor: SwiftDate.TimePeriodAnchor) -> SwiftDate.TimePeriod
+  public static func + (leftAddend: SwiftDate.TimePeriod, rightAddend: Foundation.TimeInterval) -> SwiftDate.TimePeriod
+  public static func - (minuend: SwiftDate.TimePeriod, subtrahend: Foundation.TimeInterval) -> SwiftDate.TimePeriod
+  public static func == (left: SwiftDate.TimePeriod, right: SwiftDate.TimePeriodProtocol) -> Swift.Bool
+  @objc deinit
+}
+extension SwiftDate.TimePeriod {
+  public var startDate: Foundation.Date? {
+    get
+  }
+  public var endDate: Foundation.Date? {
+    get
+  }
+  convenience public init(startDate: Foundation.Date, endDate: Foundation.Date, region: SwiftDate.Region = Region.UTC)
+}
+public enum TimePeriodRelation {
+  case after
+  case startTouching
+  case startInside
+  case insideStartTouching
+  case enclosingStartTouching
+  case enclosing
+  case enclosingEndTouching
+  case exactMatch
+  case inside
+  case insideEndTouching
+  case endInside
+  case endTouching
+  case before
+  case none
+  public static func == (a: SwiftDate.TimePeriodRelation, b: SwiftDate.TimePeriodRelation) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum IntervalType {
+  case open
+  case closed
+  public static func == (a: SwiftDate.IntervalType, b: SwiftDate.IntervalType) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum TimePeriodAnchor {
+  case beginning
+  case center
+  case end
+  public static func == (a: SwiftDate.TimePeriodAnchor, b: SwiftDate.TimePeriodAnchor) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+@_inheritsConvenienceInitializers open class TimePeriodChain : SwiftDate.TimePeriodGroup {
+  public func append(_ period: SwiftDate.TimePeriodProtocol)
+  public func append<G>(contentsOf group: G) where G : SwiftDate.TimePeriodGroup
+  public func insert(_ period: SwiftDate.TimePeriodProtocol, at index: Swift.Int)
+  public func remove(at index: Swift.Int)
+  public func removeAll()
+  public func shift(by duration: Foundation.TimeInterval)
+  override public func map<T>(_ transform: (SwiftDate.TimePeriodProtocol) throws -> T) rethrows -> [T]
+  override public func filter(_ isIncluded: (SwiftDate.TimePeriodProtocol) throws -> Swift.Bool) rethrows -> [SwiftDate.TimePeriodProtocol]
+  public func pop() -> SwiftDate.TimePeriodProtocol?
+  override public init(_ periods: [SwiftDate.TimePeriodProtocol]? = nil)
+  @objc deinit
+}
+public enum SortMode {
+  case ascending
+  case descending
+  public static func == (a: SwiftDate.SortMode, b: SwiftDate.SortMode) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum SortType {
+  case start(SwiftDate.SortMode)
+  case end(SwiftDate.SortMode)
+  case duration(SwiftDate.SortMode)
+  case custom(((SwiftDate.TimePeriodProtocol, SwiftDate.TimePeriodProtocol) -> Swift.Bool))
+}
+@_inheritsConvenienceInitializers open class TimePeriodCollection : SwiftDate.TimePeriodGroup {
+  public func append(_ period: SwiftDate.TimePeriodProtocol)
+  public func append(_ periodArray: [SwiftDate.TimePeriodProtocol])
+  public func append<C>(contentsOf newPeriods: C) where C : SwiftDate.TimePeriodGroup
+  public func insert(_ newElement: SwiftDate.TimePeriodProtocol, at index: Swift.Int)
+  public func remove(at: Swift.Int)
+  public func removeAll()
+  public func sort(by type: SwiftDate.SortType)
+  public func sorted(by type: SwiftDate.SortType) -> SwiftDate.TimePeriodCollection
+  public func periodsInside(period: SwiftDate.TimePeriodProtocol) -> SwiftDate.TimePeriodCollection
+  public func periodsIntersected(by date: SwiftDate.DateInRegion) -> SwiftDate.TimePeriodCollection
+  public func periodsIntersected(by period: SwiftDate.TimePeriodProtocol) -> SwiftDate.TimePeriodCollection
+  public func periodsOverlappedBy(_ period: SwiftDate.TimePeriodProtocol) -> SwiftDate.TimePeriodCollection
+  public func map(_ transform: (SwiftDate.TimePeriodProtocol) throws -> SwiftDate.TimePeriodProtocol) rethrows -> SwiftDate.TimePeriodCollection
+  override public init(_ periods: [SwiftDate.TimePeriodProtocol]? = nil)
+  @objc deinit
+}
+open class TimePeriodGroup : Swift.Sequence, Swift.Equatable {
+  public var start: SwiftDate.DateInRegion? {
+    get
+  }
+  public var end: SwiftDate.DateInRegion? {
+    get
+  }
+  public var duration: Foundation.TimeInterval? {
+    get
+  }
+  public var count: Swift.Int {
+    get
+  }
+  public static func == (lhs: SwiftDate.TimePeriodGroup, rhs: SwiftDate.TimePeriodGroup) -> Swift.Bool
+  public init(_ periods: [SwiftDate.TimePeriodProtocol]? = nil)
+  public func makeIterator() -> Swift.IndexingIterator<[SwiftDate.TimePeriodProtocol]>
+  public func map<T>(_ transform: (SwiftDate.TimePeriodProtocol) throws -> T) rethrows -> [T]
+  public func filter(_ isIncluded: (SwiftDate.TimePeriodProtocol) throws -> Swift.Bool) rethrows -> [SwiftDate.TimePeriodProtocol]
+  public func forEach(_ body: (SwiftDate.TimePeriodProtocol) throws -> Swift.Void) rethrows
+  public func split(maxSplits: Swift.Int, omittingEmptySubsequences: Swift.Bool, whereSeparator isSeparator: (SwiftDate.TimePeriodProtocol) throws -> Swift.Bool) rethrows -> [Swift.AnySequence<SwiftDate.TimePeriodProtocol>]
+  public subscript(index: Swift.Int) -> SwiftDate.TimePeriodProtocol {
+    get
+  }
+  public typealias Element = Swift.IndexingIterator<[SwiftDate.TimePeriodProtocol]>.Element
+  public typealias Iterator = Swift.IndexingIterator<[SwiftDate.TimePeriodProtocol]>
+  @objc deinit
+}
+public protocol TimePeriodProtocol {
+  var start: SwiftDate.DateInRegion? { get set }
+  var end: SwiftDate.DateInRegion? { get set }
+}
+extension SwiftDate.TimePeriodProtocol {
+  public var hasFiniteRange: Swift.Bool {
+    get
+  }
+  public var hasStart: Swift.Bool {
+    get
+  }
+  public var hasEnd: Swift.Bool {
+    get
+  }
+  public func equals(_ period: SwiftDate.TimePeriodProtocol) -> Swift.Bool
+  public func isInside(_ period: SwiftDate.TimePeriodProtocol) -> Swift.Bool
+  public func contains(date: SwiftDate.DateInRegion, interval: SwiftDate.IntervalType = .closed) -> Swift.Bool
+  public func contains(_ period: SwiftDate.TimePeriodProtocol) -> Swift.Bool
+  public func overlaps(with period: SwiftDate.TimePeriodProtocol) -> Swift.Bool
+  public func intersects(with period: SwiftDate.TimePeriodProtocol) -> Swift.Bool
+  public func isBefore(_ period: SwiftDate.TimePeriodProtocol) -> Swift.Bool
+  public func isAfter(_ period: SwiftDate.TimePeriodProtocol) -> Swift.Bool
+  public func hasGap(between period: SwiftDate.TimePeriodProtocol) -> Swift.Bool
+  public func gap(between period: SwiftDate.TimePeriodProtocol) -> Foundation.TimeInterval
+  public mutating func shift(by timeInterval: Foundation.TimeInterval)
+  public mutating func lengthen(by timeInterval: Foundation.TimeInterval, at anchor: SwiftDate.TimePeriodAnchor)
+  public mutating func shorten(by timeInterval: Foundation.TimeInterval, at anchor: SwiftDate.TimePeriodAnchor)
+  public func relation(to period: SwiftDate.TimePeriodProtocol) -> SwiftDate.TimePeriodRelation
+  public func isMoment(precision: Foundation.TimeInterval = 0) -> Swift.Bool
+  public func durationIn(_ units: Swift.Set<Foundation.Calendar.Component>) -> Foundation.DateComponents?
+  public func durationIn(_ unit: Foundation.Calendar.Component) -> Swift.Int?
+  public var years: Swift.Int {
+    get
+  }
+  public var months: Swift.Int {
+    get
+  }
+  public var weeks: Swift.Int {
+    get
+  }
+  public var days: Swift.Int {
+    get
+  }
+  public var hours: Swift.Int {
+    get
+  }
+  public var minutes: Swift.Int {
+    get
+  }
+  public var seconds: Swift.Int {
+    get
+  }
+  public var duration: Foundation.TimeInterval {
+    get
+  }
+}
+public enum WeekDay : Swift.Int {
+  case sunday, monday, tuesday, wednesday, thursday, friday, saturday
+  public func name(style: SwiftDate.SymbolFormatStyle = .`default`, locale: SwiftDate.LocaleConvertible = SwiftDate.defaultRegion.locale) -> Swift.String
+  public func add(days: Swift.Int) -> SwiftDate.WeekDay
+  public func subtract(days: Swift.Int) -> SwiftDate.WeekDay
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public struct Year : Swift.CustomStringConvertible, Swift.Equatable {
+  public var description: Swift.String {
+    get
+  }
+  public init(_ year: Swift.Int)
+  public func isLeap() -> Swift.Bool
+  public func numberOfDays() -> Swift.Int
+  public static func == (a: SwiftDate.Year, b: SwiftDate.Year) -> Swift.Bool
+}
+public enum Month : Swift.Int, Swift.CustomStringConvertible, Swift.Equatable {
+  case january, february, march, april, may, june, july, august, september, october, november, december
+  public var description: Swift.String {
+    get
+  }
+  public func name(style: SwiftDate.SymbolFormatStyle = .`default`, locale: SwiftDate.LocaleConvertible = SwiftDate.defaultRegion.locale) -> Swift.String
+  public func add(months: Swift.Int) -> SwiftDate.Month
+  public func subtract(months: Swift.Int) -> SwiftDate.Month
+  public func numberOfDays(year: Swift.Int) -> Swift.Int
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public protocol ZoneConvertible {
+  func toTimezone() -> Foundation.TimeZone
+}
+extension Foundation.TimeZone : SwiftDate.ZoneConvertible {
+  public func toTimezone() -> Foundation.TimeZone
+}
+public enum Zones : Swift.String, SwiftDate.ZoneConvertible {
+  case current
+  case autoUpdating
+  case africaAbidjan
+  case africaAccra
+  case africaAddisAbaba
+  case africaAlgiers
+  case africaAsmara
+  case africaBamako
+  case africaBangui
+  case africaBanjul
+  case africaBissau
+  case africaBlantyre
+  case africaBrazzaville
+  case africaBujumbura
+  case africaCairo
+  case africaCasablanca
+  case africaCeuta
+  case africaConakry
+  case africaDakar
+  case africaDarEsSalaam
+  case africaDjibouti
+  case africaDouala
+  case africaElAaiun
+  case africaFreetown
+  case africaGaborone
+  case africaHarare
+  case africaJohannesburg
+  case africaJuba
+  case africaKampala
+  case africaKhartoum
+  case fricaKigali
+  case africaKinshasa
+  case africaLagos
+  case africaLibreville
+  case africaLome
+  case africaLuanda
+  case africaLubumbashi
+  case africaLusaka
+  case africaMalabo
+  case africaMaputo
+  case africaMaseru
+  case africaMbabane
+  case africaMogadishu
+  case africaMonrovia
+  case africaNairobi
+  case africaNdjamena
+  case africaNiamey
+  case africaNouakchott
+  case africaOuagadougou
+  case africaPortoNovo
+  case africaSaoTome
+  case africaTripoli
+  case africaTunis
+  case africaWindhoek
+  case americaAdak
+  case americaAnchorage
+  case americaAnguilla
+  case americaAntigua
+  case americaAraguaina
+  case americaArgentinaBuenosAires
+  case americaArgentinaCatamarca
+  case americaArgentinaCordoba
+  case americaArgentinaJujuy
+  case americaArgentinaLaRioja
+  case americaArgentinaMendoza
+  case americaArgentinaRioGallegos
+  case americaArgentinaSalta
+  case americaArgentinaSanJuan
+  case americaArgentinaSanLuis
+  case americaArgentinaTucuman
+  case americaArgentinaUshuaia
+  case americaAruba
+  case americaAsuncion
+  case americaAtikokan
+  case americaBahia
+  case americaBahiaBanderas
+  case americaBarbados
+  case americaBelem
+  case americaBelize
+  case americaBlancSablon
+  case americaBoaVista
+  case americaBogota
+  case americaBoise
+  case americaCambridgeBay
+  case americaCampoGrande
+  case americaCancun
+  case americaCaracas
+  case americaCayenne
+  case americaCayman
+  case americaChicago
+  case americaChihuahua
+  case americaCostaRica
+  case americaCreston
+  case americaCuiaba
+  case americaCuracao
+  case americaDanmarkshavn
+  case americaDawson
+  case americaDawsonCreek
+  case americaDenver
+  case americaDetroit
+  case americaDominica
+  case americaEdmonton
+  case americaEirunepe
+  case americaElSalvador
+  case americaFortNelson
+  case americaFortaleza
+  case americaGlaceBay
+  case americaGodthab
+  case americaGooseBay
+  case americaGrandTurk
+  case americaGrenada
+  case americaGuadeloupe
+  case americaGuatemala
+  case americaGuayaquil
+  case americaGuyana
+  case americaHalifax
+  case americaHavana
+  case americaHermosillo
+  case americaIndianaIndianapolis
+  case americaIndianaKnox
+  case americaIndianaMarengo
+  case americaIndianaPetersburg
+  case americaIndianaTellCity
+  case americaIndianaVevay
+  case americaIndianaVincennes
+  case americaIndianaWinamac
+  case americaInuvik
+  case americaIqaluit
+  case americaJamaica
+  case americaJuneau
+  case americaKentuckyLouisville
+  case americaKentuckyMonticello
+  case americaKralendijk
+  case americaLaPaz
+  case americaLima
+  case americaLosAngeles
+  case americaLowerPrinces
+  case americaMaceio
+  case americaManagua
+  case americaManaus
+  case americaMarigot
+  case americaMartinique
+  case americaMatamoros
+  case americaMazatlan
+  case americaMenominee
+  case americaMerida
+  case americaMetlakatla
+  case americaMexicoCity
+  case americaMiquelon
+  case americaMoncton
+  case americaMonterrey
+  case americaMontevideo
+  case americaMontreal
+  case americaMontserrat
+  case americaNassau
+  case americaNewYork
+  case americaNipigon
+  case americaNome
+  case americaNoronha
+  case americaNorthDakotaBeulah
+  case americaNorthDakotaCenter
+  case americaNorthDakotaNewSalem
+  case americaOjinaga
+  case americaPanama
+  case americaPangnirtung
+  case americaParamaribo
+  case americaPhoenix
+  case americaPortAuPrince
+  case americaPortOfSpain
+  case americaPortoVelho
+  case americaPuertoRico
+  case americaRainyRiver
+  case americaRankinInlet
+  case americaRecife
+  case americaRegina
+  case americaResolute
+  case americaRioBranco
+  case americaSantaIsabel
+  case americaSantarem
+  case americaSantiago
+  case americaSantoDomingo
+  case americaSaoPaulo
+  case americaScoresbysund
+  case americaShiprock
+  case americaSitka
+  case americaStBarthelemy
+  case americaStJohns
+  case americaStKitts
+  case americaStLucia
+  case americaStThomas
+  case americaStVincent
+  case americaSwiftCurrent
+  case americaTegucigalpa
+  case americaThule
+  case americaThunderBay
+  case americaTijuana
+  case americaToronto
+  case americaTortola
+  case americaVancouver
+  case americaWhitehorse
+  case americaWinnipeg
+  case americaYakutat
+  case americaYellowknife
+  case antarcticaCasey
+  case antarcticaDavis
+  case antarcticaDumontdurville
+  case antarcticaMacquarie
+  case antarcticaMawson
+  case antarcticaMcmurdo
+  case antarcticaPalmer
+  case antarcticaRothera
+  case antarcticaSouthPole
+  case antarcticaSyowa
+  case antarcticaTroll
+  case antarcticaVostok
+  case arcticLongyearbyen
+  case asiaAden
+  case asiaAlmaty
+  case asiaAmman
+  case asiaAnadyr
+  case asiaAqtau
+  case asiaAqtobe
+  case asiaAshgabat
+  case asiaBaghdad
+  case asiaBahrain
+  case asiaBaku
+  case asiaBangkok
+  case asiaBeirut
+  case asiaBishkek
+  case asiaBrunei
+  case asiaChita
+  case asiaChoibalsan
+  case asiaChongqing
+  case asiaColombo
+  case asiaDamascus
+  case asiaDhaka
+  case asiaDili
+  case asiaDubai
+  case asiaDushanbe
+  case asiaGaza
+  case asiaHarbin
+  case asiaHebron
+  case asiaHoChiMinh
+  case asiaSaigon
+  case asiaHongKong
+  case asiaHovd
+  case asiaIrkutsk
+  case asiaJakarta
+  case asiaJayapura
+  case asiaJerusalem
+  case asiaKabul
+  case asiaKamchatka
+  case asiaKarachi
+  case asiaKashgar
+  case asiaKathmandu
+  case asiaKatmandu
+  case asiaKhandyga
+  case asiaKolkata
+  case asiaKrasnoyarsk
+  case asiaKualaLumpur
+  case asiaKuching
+  case asiaKuwait
+  case asiaMacau
+  case asiaMagadan
+  case asiaMakassar
+  case asiaManila
+  case asiaMuscat
+  case asiaNicosia
+  case asiaNovokuznetsk
+  case asiaNovosibirsk
+  case asiaOmsk
+  case asiaOral
+  case asiaPhnomPenh
+  case asiaPontianak
+  case asiaPyongyang
+  case asiaQatar
+  case asiaQyzylorda
+  case asiaRangoon
+  case asiaRiyadh
+  case asiaSakhalin
+  case asiaSamarkand
+  case asiaSeoul
+  case asiaShanghai
+  case asiaSingapore
+  case asiaSrednekolymsk
+  case asiaTaipei
+  case asiaTashkent
+  case asiaTbilisi
+  case asiaTehran
+  case asiaThimphu
+  case asiaTokyo
+  case asiaUlaanbaatar
+  case asiaUrumqi
+  case asiaUstNera
+  case asiaVientiane
+  case asiaVladivostok
+  case asiaYakutsk
+  case asiaYekaterinburg
+  case asiaYerevan
+  case atlanticAzores
+  case atlanticBermuda
+  case atlanticCanary
+  case atlanticCapeVerde
+  case atlanticFaroe
+  case atlanticMadeira
+  case atlanticReykjavik
+  case atlanticSouthGeorgia
+  case atlanticStHelena
+  case atlanticStanley
+  case australiaAdelaide
+  case australiaBrisbane
+  case australiaBrokenHill
+  case australiaCurrie
+  case australiaDarwin
+  case australiaEucla
+  case australiaHobart
+  case australiaLindeman
+  case australiaLordHowe
+  case australiaMelbourne
+  case australiaPerth
+  case australiaSydney
+  case europeAmsterdam
+  case europeAndorra
+  case europeAthens
+  case europeBelgrade
+  case europeBerlin
+  case europeBratislava
+  case europeBrussels
+  case europeBucharest
+  case europeBudapest
+  case europeBusingen
+  case europeChisinau
+  case europeCopenhagen
+  case europeDublin
+  case europeGibraltar
+  case europeGuernsey
+  case europeHelsinki
+  case europeIsleOfMan
+  case europeIstanbul
+  case europeJersey
+  case europeKaliningrad
+  case europeKiev
+  case europeLisbon
+  case europeLjubljana
+  case europeLondon
+  case europeLuxembourg
+  case europeMadrid
+  case europeMalta
+  case europeMariehamn
+  case europeMinsk
+  case europeMonaco
+  case europeMoscow
+  case europeOslo
+  case europeParis
+  case europePodgorica
+  case europePrague
+  case europeRiga
+  case europeRome
+  case europeSamara
+  case europeSanMarino
+  case europeSarajevo
+  case europeSimferopol
+  case europeSkopje
+  case europeSofia
+  case europeStockholm
+  case europeTallinn
+  case europeTirane
+  case europeUzhgorod
+  case europeVaduz
+  case europeVatican
+  case europeVienna
+  case europeVilnius
+  case europeVolgograd
+  case europeWarsaw
+  case europeZagreb
+  case europeZaporozhye
+  case europeZurich
+  case gmt
+  case indianAntananarivo
+  case indianChagos
+  case indianChristmas
+  case indianCocos
+  case indianComoro
+  case indianKerguelen
+  case indianMahe
+  case indianMaldives
+  case indianMauritius
+  case indianMayotte
+  case indianReunion
+  case pacificApia
+  case pacificAuckland
+  case pacificBougainville
+  case pacificChatham
+  case pacificChuuk
+  case pacificEaster
+  case pacificEfate
+  case pacificEnderbury
+  case pacificFakaofo
+  case pacificFiji
+  case pacificFunafuti
+  case pacificGalapagos
+  case pacificGambier
+  case pacificGuadalcanal
+  case pacificGuam
+  case pacificHonolulu
+  case pacificJohnston
+  case pacificKiritimati
+  case pacificKosrae
+  case pacificKwajalein
+  case pacificMajuro
+  case pacificMarquesas
+  case pacificMidway
+  case pacificNauru
+  case pacificNiue
+  case pacificNorfolk
+  case pacificNoumea
+  case pacificPagoPago
+  case pacificPalau
+  case pacificPitcairn
+  case pacificPohnpei
+  case pacificPonape
+  case pacificPortMoresby
+  case pacificRarotonga
+  case pacificSaipan
+  case pacificTahiti
+  case pacificTarawa
+  case pacificTongatapu
+  case pacificTruk
+  case pacificWake
+  case pacificWallis
+  public func toTimezone() -> Foundation.TimeZone
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+extension SwiftDate.SymbolFormatStyle : Swift.Equatable {}
+extension SwiftDate.SymbolFormatStyle : Swift.Hashable {}
+extension SwiftDate.ISO8601ParserError : Swift.Equatable {}
+extension SwiftDate.ISO8601ParserError : Swift.Hashable {}
+extension SwiftDate.ISOParser.ParsedDate.DateStyle : Swift.Equatable {}
+extension SwiftDate.ISOParser.ParsedDate.DateStyle : Swift.Hashable {}
+extension SwiftDate.Locales : Swift.Equatable {}
+extension SwiftDate.Locales : Swift.Hashable {}
+extension SwiftDate.Locales : Swift.RawRepresentable {}
+extension SwiftDate.RelativeFormatter.PluralForm : Swift.Equatable {}
+extension SwiftDate.RelativeFormatter.PluralForm : Swift.Hashable {}
+extension SwiftDate.RelativeFormatter.PluralForm : Swift.RawRepresentable {}
+extension SwiftDate.RelativeFormatter.Flavour : Swift.Equatable {}
+extension SwiftDate.RelativeFormatter.Flavour : Swift.Hashable {}
+extension SwiftDate.RelativeFormatter.Flavour : Swift.RawRepresentable {}
+extension SwiftDate.RelativeFormatter.Unit : Swift.Equatable {}
+extension SwiftDate.RelativeFormatter.Unit : Swift.Hashable {}
+extension SwiftDate.RelativeFormatter.Unit : Swift.RawRepresentable {}
+extension SwiftDate.RelativeFormatterLanguage : Swift.Equatable {}
+extension SwiftDate.RelativeFormatterLanguage : Swift.Hashable {}
+extension SwiftDate.RelativeFormatterLanguage : Swift.RawRepresentable {}
+extension SwiftDate.TimePeriodRelation : Swift.Equatable {}
+extension SwiftDate.TimePeriodRelation : Swift.Hashable {}
+extension SwiftDate.IntervalType : Swift.Equatable {}
+extension SwiftDate.IntervalType : Swift.Hashable {}
+extension SwiftDate.TimePeriodAnchor : Swift.Equatable {}
+extension SwiftDate.TimePeriodAnchor : Swift.Hashable {}
+extension SwiftDate.SortMode : Swift.Equatable {}
+extension SwiftDate.SortMode : Swift.Hashable {}
+extension SwiftDate.WeekDay : Swift.Equatable {}
+extension SwiftDate.WeekDay : Swift.Hashable {}
+extension SwiftDate.WeekDay : Swift.RawRepresentable {}
+extension SwiftDate.Month : Swift.Hashable {}
+extension SwiftDate.Month : Swift.RawRepresentable {}
+extension SwiftDate.Zones : Swift.Equatable {}
+extension SwiftDate.Zones : Swift.Hashable {}
+extension SwiftDate.Zones : Swift.RawRepresentable {}
