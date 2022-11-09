@@ -5,7 +5,7 @@
 //  Created by Lorenzo Limoli on 04/11/22.
 //
 
-import SdkB
+import SdkBStatic
 import SwiftDate
 
 public final class TestClassA{

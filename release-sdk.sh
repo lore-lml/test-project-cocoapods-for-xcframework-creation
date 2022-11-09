@@ -6,7 +6,7 @@
 WORKSPACE=TestApp
 SCHEME=SdkA
 FOLDER=archives
-DEPENDENCIES=($SCHEME SdkB SwiftDate libPhoneNumber_iOS)
+DEPENDENCIES=($SCHEME)
 
 if [ ! -d "./$FOLDER" ];
 then
@@ -17,17 +17,14 @@ xcodebuild archive -workspace ./$WORKSPACE.xcworkspace -scheme $SCHEME -destinat
 
 xcodebuild archive -workspace ./$WORKSPACE.xcworkspace -scheme $SCHEME -destination generic/platform="iOS Simulator" -archivePath ./$FOLDER/$SCHEME-iphonesimulator.xcarchive SKIP_INSTALL=NO BUILD_LIBRARY_FOR_DISTRIBUTION=YES
 
-cmd="xcodebuild -create-xcframework"
-for d in ${DEPENDENCIES[@]}; do
-    cmd+=" -framework ./$FOLDER/$SCHEME-iphoneos.xcarchive/Products/Library/Frameworks/$d.framework"
-done
+#for d in ${DEPENDENCIES[@]}; do
+#    xcodebuild -create-xcframework \
+#    -framework ./$FOLDER/$SCHEME-iphoneos.xcarchive/Products/Library/Frameworks/$d.framework \
+#    -framework ./$FOLDER/$SCHEME-iphonesimulator.xcarchive/Products/Library/Frameworks/$d.framework \
+#    -output ./$FOLDER/$SCHEME.xcframework
+#done
 
-for d in ${DEPENDENCIES[@]}; do
-    cmd+=" -framework ./$FOLDER/$SCHEME-iphonesimulator.xcarchive/Products/Library/Frameworks/$d.framework"
-done
-
-
-
-cmd+=" -output ./$FOLDER/$SCHEME.xcframework"
-
-$cmd
+xcodebuild -create-xcframework \
+-framework ./$FOLDER/$SCHEME-iphoneos.xcarchive/Products/Library/Frameworks/$SCHEME.framework \
+-framework ./$FOLDER/$SCHEME-iphonesimulator.xcarchive/Products/Library/Frameworks/$SCHEME.framework \
+-output ./$FOLDER/$SCHEME.xcframework

@@ -20,6 +20,9 @@ DerivedData/
 !default.perspectivev3
 xcuserdata/
 
+archives/
+archives/*/**
+
 ## Other
 *.moved-aside
 *.xccheckout
